@@ -135,6 +135,8 @@ struct Results {
   std::vector<double> velocity;
   /* Heating rate (in erg cm^-3 s^-1) */
   std::vector<double> heat;
+  /* Abundance factor (unitless) */
+  std::vector<double> abundance_factor;
 };
 
 // Structure to hold equation terms

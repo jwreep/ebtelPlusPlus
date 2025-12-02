@@ -106,6 +106,10 @@ void Loop::Setup(void)
   results.temperature_i.reserve(parameters.N);
   results.density.reserve(parameters.N);
   results.velocity.reserve(parameters.N);
+  if (parameters.radiative_loss != "power_law")
+  {
+        results.abundance_factor.reserve(parameters.N);
+  }
 }
 
 state_type Loop::GetState(void)
@@ -221,7 +225,11 @@ py::dict Loop::GetFinalResults(int num_steps)
   results.pressure_i.resize(num_steps);
   results.velocity.resize(num_steps);
   results.heat.resize(num_steps);
-
+  if (parameters.radiative_loss != "power_law")
+  {
+        results.abundance_factor(num_steps);
+  }
+  
   // Store in directory
   results_dict["time"] = results.time;
   results_dict["electron_temperature"] = results.temperature_e;
@@ -231,6 +239,10 @@ py::dict Loop::GetFinalResults(int num_steps)
   results_dict["ion_pressure"] = results.pressure_i;
   results_dict["velocity"] = results.velocity;
   results_dict["heat"] = results.heat;
+  if (parameters.radiative_loss != "power_law")
+  {
+        results_dict["abundance_factor"] = results.abundance_factor;
+  }
 
   // Store terms
   terms.f_e.resize(num_steps);

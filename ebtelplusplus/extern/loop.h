@@ -154,7 +154,7 @@ public:
 
   // Calculate $c_3$
   //
-  // Calculate the ratio of the base (corona/interface point)to apex temperature.
+  // Calculate the ratio of the base (corona/interface point) to apex temperature.
   // Fixed at 0.6 for now.
   //
   // @return $c_3$ parameter
