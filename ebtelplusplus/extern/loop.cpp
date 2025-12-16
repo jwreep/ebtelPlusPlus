@@ -227,7 +227,7 @@ py::dict Loop::GetFinalResults(int num_steps)
   results.heat.resize(num_steps);
   if (parameters.radiative_loss != "power_law")
   {
-        results.abundance_factor(num_steps);
+        results.abundance_factor.resize(num_steps);
   }
   
   // Store in directory
