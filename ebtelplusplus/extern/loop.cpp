@@ -92,11 +92,6 @@ void Loop::Setup(void)
   // Calculate needed He abundance corrections
   CalculateIonMassCorrection(parameters.helium_to_hydrogen_ratio);
 
-  if (parameters.use_lookup_table_losses)
-  {
-      ReadRadiativeLossData();  // Initialize the radiative loss arrays
-  }
-
   //Reserve memory for results
   results.time.reserve(parameters.N);
   results.heat.reserve(parameters.N);
@@ -106,9 +101,10 @@ void Loop::Setup(void)
   results.temperature_i.reserve(parameters.N);
   results.density.reserve(parameters.N);
   results.velocity.reserve(parameters.N);
-  if (parameters.radiative_loss != "power_law")
+  if (parameters.use_lookup_table_losses)
   {
-        results.abundance_factor.reserve(parameters.N);
+      ReadRadiativeLossData();  // Initialize the radiative loss arrays
+      results.abundance_factor.reserve(parameters.N);
   }
 }
 
@@ -239,7 +235,7 @@ py::dict Loop::GetFinalResults(int num_steps)
   results_dict["ion_pressure"] = results.pressure_i;
   results_dict["velocity"] = results.velocity;
   results_dict["heat"] = results.heat;
-  if (parameters.radiative_loss != "power_law")
+  if( parameters.use_lookup_table_losses )
   {
         results_dict["abundance_factor"] = results.abundance_factor;
   }
@@ -266,7 +262,7 @@ void Loop::CalculateDerivatives(const state_type &state, state_type &derivs, dou
   double f_e = CalculateThermalConduction(state[3],state[2],"electron");
   double f_i = CalculateThermalConduction(state[4],state[2],"ion");
   double radiative_loss;
-  if (parameters.use_lookup_table_losses)
+  if( parameters.use_lookup_table_losses )
   {
       radiative_loss = CalculateRadiativeLoss(state[3], state[2]);
   }
@@ -345,7 +341,7 @@ void Loop::SaveTerms(void)
   double f_i = CalculateThermalConduction(__state[4], __state[2], "ion");
   double c1 = CalculateC1(__state[3], __state[4], __state[2]);
   double radiative_loss;
-  if (parameters.use_lookup_table_losses)
+  if( parameters.use_lookup_table_losses )
   {
       radiative_loss = CalculateRadiativeLoss(__state[3], __state[2]);
   }
@@ -513,7 +509,7 @@ double Loop::CalculateC1(double temperature_e, double temperature_i, double dens
   double loss_correction = 1.0;
   double scale_height = CalculateScaleHeight(temperature_e,temperature_i);
   double radiative_loss;
-  if (parameters.use_lookup_table_losses && !parameters.initial_radiation)
+  if( parameters.use_lookup_table_losses && !parameters.initial_radiation )
   {
       radiative_loss = CalculateRadiativeLoss(temperature_e, density);
   }
